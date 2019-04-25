@@ -94,7 +94,7 @@ namespace SecondLab_C_Octotorp_Variant_11
         }
         public int PrintSquare()
         {
-            // формула Герона
+            // формула Герона.
             int halfPerimetr = (FirstSide + SecondSide + ThirdSide) / 2;
             int square = (int)Math.Sqrt(halfPerimetr * (halfPerimetr - FirstSide) * 
                 (halfPerimetr - SecondSide) * (halfPerimetr - ThirdSide));
