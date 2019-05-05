@@ -29,26 +29,36 @@ namespace SecondLab_C_Octotorp_Variant_11
                 {
                     binaryExtractor.InitialDirectory = Environment.SpecialFolder.Desktop.ToString();
                     pathToFile = binaryExtractor.FileName;
-                    using (BinaryReader stream = new BinaryReader(File.Open(pathToFile, FileMode.Open)))
+                    using (FileStream fs = new FileStream(pathToFile, FileMode.Open))
                     {
-                        try
+                        using (BinaryReader stream = new BinaryReader(fs))
                         {
-                            if(stream.ReadString() != null)
-                            casheBox.Text = stream.ReadString();
-                        }
-                        catch (EndOfStreamException ex)
-                        {
-                            casheBox.Text = "";
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
-                        finally
-                        {
-                            stream.Close();
+                            try
+                            {
+                                if (new FileInfo(pathToFile).Length != 0)
+                                {
+                                    foreach (char item in stream.ReadChars(500))
+                                    {
+                                        casheBox.Text += item;
+                                    }
+                                }
+                            }
+                            catch (EndOfStreamException ex)
+                            {
+                                casheBox.Text = "";
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                            finally
+                            {
+                                fs.Close();
+                                stream.Close();
+                            }
                         }
                     }
+
                 }
             }
             else
@@ -108,8 +118,7 @@ namespace SecondLab_C_Octotorp_Variant_11
         }
 
         private void searchButton_Click(object sender, EventArgs e)
-        {
-           
+        {           
             int max = 0;
             int maxGip = 0;
             for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
@@ -135,7 +144,7 @@ namespace SecondLab_C_Octotorp_Variant_11
             var result = MessageBox.Show("Do you want to cashe your information ?", "Cashe saver", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
-                if (String.IsNullOrWhiteSpace(infoBox.Text) && String.IsNullOrWhiteSpace(infoBox2.Text))
+                if (String.IsNullOrWhiteSpace(infoBox.Text) == false && String.IsNullOrWhiteSpace(infoBox2.Text) == false)
                 {
                     SaveInformationFromTwoGrid(pathToFile);
                 }
@@ -158,7 +167,7 @@ namespace SecondLab_C_Octotorp_Variant_11
                 using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate)))
                 {
                     writer.Write(infoBox.Text);
-                    writer.Write('\n');
+                    writer.Write("\n");
                     writer.Write(infoBox2.Text);
                     writer.Close();
                     MessageBox.Show("All information was wrote");
